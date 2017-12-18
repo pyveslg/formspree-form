@@ -1,0 +1,224 @@
+<div id="apply-form">
+  <form action="https://formspree.io/info@novexpat.fr" method="post" id="apply-form-form">
+    <!-- SESSIONS -->
+    <div class="apply-form-row apply-form-first">
+      <label>
+        <i class=' fa fa-calendar-check-o'></i><span>Dates</span>
+      </label>
+      <div class='apply-form-row-item'>
+        <div class="post-submissions-select">
+          <% if @programme.nil? %>
+            <div>
+              <p>Sorry. There are no session availabilities at the moment. We invite you to <%= link_to 'contact us', '#', style:"color: white; text-decoration: underline;", data: {toggle: "modal", target:"#contactModal"} %></span> and show us your interest in the programme. You will get noticed as soon as a new session is planned. Thank you.</p>
+            </div>
+          <% else %>
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownBatchSelection" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select Program next availabilities
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownBatchSelection">
+                <% sorted_array = @programme.sort_by {|k,_| Date.parse(@programme[k].end_date)}  %>
+                <% sorted_array.each do |session|  %>
+                  <% if !session[1].cancelled? %>
+                    <% if Date.parse(session[1].end_date) > Date.today %>
+                      <div class="batch_option" value="<%= Date.parse(session[1].start_date).strftime("%B %e, %Y") %> - <%= Date.parse(session[1].end_date).strftime("%B %e, %Y") %>" data-ref="<%= session[0] %> - <%= Date.parse(session[1].start_date).strftime("%B %e, %Y") %> - <%= Date.parse(session[1].end_date).strftime("%B %e, %Y") %>">
+                        <div class="batch_option_left">
+                          <p><strong><i class=' fa fa-calendar'></i> <%= Date.parse(session[1].start_date).strftime("%b %e, %Y") %> - <%= Date.parse(session[1].end_date).strftime("%b %e, %Y") %></strong>
+                          </p>
+                          <p><i class="fa fa-map-marker"></i> <%= session[1].city %></p>
+                          <p id=apply-level><i class="fa fa-exclamation-triangle"></i> <%= session[1].level %> levels</p>
+
+                            <p>
+                            </p>
+
+                            <p>
+                              <i class="fa fa-clock-o"></i>
+                              <% if session[1].single_session  %>
+                                 1 session a week <em>(except holidays period)</em> on:
+                                <ul><li><%= session[1].weeka %></li></ul>
+                              <% else %>
+                                 2 sessions a week <em>(except holidays period)</em> on:
+                                <ul>
+                                  <li><%= session[1].weeka %></li>
+                                  <li><%= session[1].weekb %></li>
+                                </ul>
+                              <% end %>
+                            </p>
+
+                        </div>
+                        <div class="batch_option_right">
+
+                          <% if session[1].left_places < 1 %>
+                            FULL
+                          <% elsif session[1].left_places.fdiv(session[1].places) < 0.3 %>
+                            LAST SEATS
+                          <% else %>
+                            OPEN
+                          <% end %>
+                        </div>
+                      </div>
+                      <div class="dropdown-divider"></div>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </ul>
+          <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% if !@programme.nil? %>
+      <input type="hidden" name="selected_batch" value="" required>
+
+      <!-- FIRST NAME -->
+      <div class="apply-form-row mc-field-group form-group text-left">
+        <label><i class=' fa fa-user'></i><span>First Name</span></label>
+        <div class='apply-form-row-item'>
+          <input value="" type="text" class="form-control" name="first_name" id="first_name" placeholder="Bob" required>
+        </div>
+      </div>
+
+      <!-- LAST NAME -->
+       <div class="apply-form-row mc-field-group form-group text-left">
+        <label><i class=' fa fa-chevron-circle-right'></i><span>Last Name</span></label>
+        <div class='apply-form-row-item'>
+          <input value="" type="text" class="form-control" name="last_name" id="last_name" placeholder="Smith" required>
+        </div>
+      </div>
+
+      <!-- AGE -->
+       <div class="apply-form-row mc-field-group form-group text-left">
+        <label><i class=' fa fa-birthday-cake'></i><span>Age</span></label>
+        <div class='apply-form-row-item'>
+          <input value="" type="text" class="form-control" name="age" id="age" placeholder="45" required digits>
+        </div>
+      </div>
+
+      <!-- EMAIL -->
+       <div class="apply-form-row mc-field-group form-group text-left">
+        <label><i class=' fa fa-envelope'></i><span>Email</span></label>
+        <div class='apply-form-row-item'>
+          <input type="email" value="" class="form-control" name="_replyto" id="reply_to_email" placeholder="bob@smith.com" required>
+        </div>
+      </div>
+
+      <!-- PHONE -->
+       <div class="apply-form-row mc-field-group form-group text-left">
+        <label><i class=' fa fa-mobile'></i><span>Phone</span></label>
+        <div class='apply-form-row-item'>
+          <input type="tel" value="" class="form-control" name="phone" id="phone" placeholder="+33612345678" required>
+        </div>
+      </div>
+
+      <!-- REFERRER -->
+       <div class="apply-form-row mc-field-group form-group text-left">
+        <label><i class=' fa fa-bullhorn'></i><span>Referee</span></label>
+        <div class='apply-form-row-item'>
+          <input value="" type="text" class="form-control" name="referrer" id="referrer" placeholder="Who did refer us to you?" required>
+        </div>
+      </div>
+
+      <!-- LINKEDIN -->
+       <div class="apply-form-row mc-field-group form-group text-left">
+        <label class="not_mandatory"><i class=' fa fa-linkedin'></i><span>Your Profile</span> <span style="font-size: 13px;">(helps)</span></label>
+        <div class='apply-form-row-item'>
+          <input value="" type="text" class="form-control" name="linkedin" id="linkedin" placeholder="https://www.linkedin.com/in/bobsmith">
+        </div>
+      </div>
+
+      <!-- MOTIVATION -->
+       <div class="apply-form-row mc-field-group form-group text-left">
+        <label><i class=' fa fa-edit'></i><span> Motivation</span></label>
+        <div class='apply-form-row-item'>
+          <textarea value="" class="form-control" name="motivation" id="motivation" placeholder="Please write here" required></textarea>
+        </div>
+      </div>
+
+      <!-- AVOIDING SPAMMER -->
+      <input type="text" name="_gotcha" style="display:none" />
+
+      <!-- THANK YOU PAGE -->
+      <!-- <input type="hidden" name="_next" value="//novexpat.fr/thank_you/" /> -->
+
+      <div class="apply-form-row-submit">
+        <div class="apply-form-price">
+          <p>Price: <strong>609€</strong></p>
+          <span style="font-size: 11px; opacity:0.7;margin-top:0px;">Applying does not require any immediate payment.</span>
+        </div>
+        <div class="apply-form-submit smart-btn smart-btn-rounded smart-btn-border">
+          <input type="submit" value="Apply now" id="smartexpat-btn">
+        </div>
+
+      </div>
+
+      <!-- <div class="text-center">
+        <div class="clear smart-btn smart-btn-rounded smart-btn-border" id="smartexpat-btn">
+          <a href="javascript:{}" onclick="document.getElementById('apply-form-form').submit(); return false;" id="smartexpat-btn">Apply now</a>
+        </div>
+      </div> -->
+    <% end %>
+</div>
+
+<!-- Hidden message to show if user encounters errors. -->
+<div id="submit-errors" class="collapse">
+  It looks like there was an error submitting the form.
+  Please try again later.
+</div>
+
+
+
+
+<!-- //SCRIPT FOR APPLICATION FORM VALIDATION -->
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
+
+<script type="text/javascript">
+  var warning_message_array = $('.batch_option_right')
+  warning_message_array.each(function(){
+    var full_message = $.trim($(this).text())
+    if (full_message === "FULL") {
+      $(this).parent().addClass("full_program");
+    }
+  })
+
+  $('.batch_option').click(function(){
+
+    var selectedDate = $(this).attr('value');
+    var selectedDateRef = $(this).attr('data-ref');
+    var status = $.trim($(this).find(".batch_option_right").text());
+
+    if (status !== "FULL") {
+      $('#dropdownBatchSelection').html(selectedDate + ' <span class="caret"></span>');
+      $("input[name='selected_batch']").val(selectedDateRef);
+    }
+
+  });
+
+  $("#apply-form-form").validate({
+    submitHandler: function(form) {
+      $.ajax({
+        url: "//formspree.io/info@novexpat.fr",
+        method: "POST",
+        data: {
+          selected_batch: $(form).find("input[name='selected_batch']").val(),
+          first_name: $(form).find("input[name='first_name']").val(),
+          last_name: $(form).find("input[name='last_name']").val(),
+          age: $(form).find("input[name='age']").val(),
+          _replyto: $(form).find("input[name='_replyto']").val(),
+          phone: $(form).find("input[name='phone']").val(),
+          referrer: $(form).find("input[name='referrer']").val(),
+          linkedin: $(form).find("input[name='linkedin']").val(),
+          motivation: $(form).find("textarea[name='motivation']").val()
+        },
+        dataType: "json",
+        success: function() {
+          location.href = "//www.novexpat.fr/thank_you/"
+        },
+        error: function() {
+          $("#submit-errors").fadeIn();
+        }
+      });
+    }
+  });
+
+</script>
